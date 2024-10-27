@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Ruletka</title>
+    <style>
+        body {
+            background-color: gray; 
+            color: white; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .roulette-container {
+            position: relative;
+            width: 250px;  
+            height: 250px; 
+            perspective: 1000px; 
+        }
+
+        .roulette {
+            width: 100%;
+            height: 100%;
+            border-radius: 100%;
+            position: relative;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            background-image: url('C:\\Users\\13-19lat\\Documents\\lekcja\\ruletka.jpg'); 
+            background-size: cover; 
+            background-position: center; 
+            transform: rotate(0deg);
+            transition: transform 4s cubic-bezier(0.33, 1, 0.68, 1);
+        }
+
+        .marker {
+            position: absolute;
+            width: 4px;
+            height: 30px;
+            background-color: red;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1; 
+        }
+
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center; 
+            margin-bottom: 20px; 
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            color: white;
+            border: none; 
+            border-radius: 5px;
+            margin: 5px;
+            transition: background-color 0.3s; 
+        }
+
+        #redButton { background-color: red; }
+        #blackButton { background-color: black; }
+        #greenButton { background-color: green; }
+
+        button:hover {
+            opacity: 0.8; 
+        }
+    </style>
+</head>
+<body>
+    <div class="button-container">
+        <p><b>RULETKA</b></p>
+        <input type="text" id="betAmount" placeholder="Kwota (np. 15)">
+        <div>
+            <button id="redButton">Czerwony</button>
+            <button id="blackButton">Czarny</button>
+            <button id="greenButton">Zielony</button>
+        </div>
+        <input type="number" id="betNumber" placeholder="Liczba (0-36)">
+        <button id="spinButton">Kręć Ruletką!</button>
+    </div>
+    <div class="roulette-container">
+        <div class="roulette" id="roulette"></div>
+        <div class="marker"></div>
+    </div>
+
+    <script>
+        const roulette = document.getElementById('roulette');
+        const spinButton = document.getElementById('spinButton');
+        let betColor = '';
+
+        document.getElementById('redButton').addEventListener('click', () => {
+            betColor = 'czerwony';
+        });
+
+        document.getElementById('blackButton').addEventListener('click', () => {
+            betColor = 'czarny';
+        });
+
+        document.getElementById('greenButton').addEventListener('click', () => {
+            betColor = 'zielony';
+        });
+
+        spinButton.addEventListener('click', () => {
+            const betAmount = parseInt(document.getElementById('betAmount').value);
+            const betNumber = parseInt(document.getElementById('betNumber').value);
+        
+            // Symulacja losowania koloru i liczby
+            const colors = ['czerwony', 'czarny', 'zielony'];
+            const winningColor = colors[Math.floor(Math.random() * colors.length)];
+            const winningNumber = Math.floor(Math.random() * 37);
+        
+            // Oblicz dodatkowy obrót
+            const fullRotation = 360; 
+            const additionalRotation = Math.floor(Math.random() * 360) + 720; // Losowy obrót między 720 a 1080 stopni
+            const totalRotation = fullRotation + additionalRotation;
+
+            roulette.style.transform = `rotate(${totalRotation}deg)`; // Ustaw obrót ruletki
+        
+            // Sprawdź wygraną po animacji
+            setTimeout(() => {
+                // Sprawdzenie wygranej
+                let winnings = 0;
+        
+                // Sprawdzenie koloru
+                if (betColor === winningColor) {
+                    winnings += (betAmount * 2);
+                }
+        
+                // Sprawdzenie liczby
+                if (betNumber === winningNumber) {
+                    winnings += (betAmount * 14);
+                }
+                
+                // Powiadomienie o wygranej
+                if (winnings > 0) {
+                    alert(`Gratulacje! Wygrałeś/aś ${winnings} zł!`);
+                } else {
+                    alert(`Niestety, przegrałeś/aś!`);
+                }
+        
+                // Resetujemy styl transformacji po zakończeniu animacji
+                roulette.style.transform = 'rotate(0deg)';
+                betColor = ''; // Reset koloru po zakładzie
+            }, 4000); // Powiadomienie pojawia się po 4 sekundach
+        });
+    </script>
+</body>
+</html>
